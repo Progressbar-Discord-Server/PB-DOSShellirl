@@ -3,6 +3,7 @@ import keyboard
 import random
 import colorama
 import os
+import string
 
 os.system('mode con: cols=60 lines=31')
 
@@ -114,7 +115,22 @@ class GreenSegment(Segment):
     def __init__(self, position, speed, wobbling_speed):
         super().__init__(position, "✓", speed, wobbling_speed)
 
-class SegmentGen(Node):
+class Clippy(Node):
+    def __init__(self, position):
+        self.key = random.choice(string.ascii_letters)
+        super().__init__(position, f"╔═╗╔════════════╗\n00║╠════════════╣\n╚╝║║ close  ({self.key}) ║\n╚═╝╚════════════╝")
+    def _process(self, scene, delta):
+        if keyboard.is_pressed(self.key):
+            scene.remove_node(self)
+            del self
+        else:
+            progressbar_pos = scene.get_node(0).position
+            if progressbar_pos != self.position:
+                direction = [(progressbar_pos[i]-self.position[i])/abs(progressbar_pos[i]-self.position[i]) for i in range(2)]
+                self.position[0] += direction[0] * 4 * delta
+                self.position[1] += direction[1] * 4 * delta
+
+class ObjectGen(Node):
     def __init__(self):
         super().__init__([0, 0], "")
         self.ticks = 0
@@ -122,10 +138,11 @@ class SegmentGen(Node):
     def _process(self, scene, delta):
         self.ticks += 1
         if self.ticks == 10000:
-            scene.add_node(random.choice([BlueSegment([random.randint(0, 60), 0], 4, 4), PinkSegment([random.randint(
+            scene.add_node(random.choices([BlueSegment([random.randint(0, 60), 0], 4, 4), PinkSegment([random.randint(
                 0, 60), 0], 4, 4), RedSegment([random.randint(0, 60), 0], 4, 4), YellowSegment([random.randint(0, 60), 0], 4, 4),
                 NullSegment([random.randint(0, 60), 0], 4, 4), GreenSegment([random.randint(0, 60), 0], 4, 4),
-                CyanSegment([random.randint(0, 60), 0], 4, 4, random.randint(2, 3))]))
+                CyanSegment([random.randint(0, 60), 0], 4, 4, random.randint(2, 3)), Clippy([random.randint(0, 60), 
+                random.randint(0, 30)], [0.3, 0.14, 0.01, 0.14, 0.3, 0.01, 0.1])])[0])
             self.ticks = 0
 
 
@@ -140,13 +157,13 @@ class WinningScreen(Node):
 
 progressbar = Progressbar([6, 0])
 
-segmentgen = SegmentGen()
+objectgen = ObjectGen()
 
 scene = Scene()
 
 scene.add_node(progressbar)
 
-scene.add_node(segmentgen)
+scene.add_node(objectgen)
 
 confirm = input(
     "WARNING: Flashing lights, please do not play if you're sensitive (Y)")

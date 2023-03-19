@@ -6,7 +6,7 @@ class Node():
         self.position = position
         self.texture = texture
         self.collision_box = collision_box
-        self.renderobject = RenderingObject(position, texture)
+        self.renderobject = RenderingObject(self.position, texture)
     def _process(self, scene, delta):
         pass
     def _on_collision(self, scene, collider):
@@ -43,6 +43,9 @@ class Scene():
     def add_node(self, node: Node):
         self.nodes.append(node)
         self.renderer.add_object(node.renderobject)
+
+    def get_node(self, id: int):
+        return self.nodes[id]
 
     def remove_node(self, node: Node):
         self.nodes.remove(node)

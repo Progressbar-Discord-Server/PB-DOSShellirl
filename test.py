@@ -1,4 +1,4 @@
-from engine import Scene, Node
+from engine import Scene, Node, SceneManager
 import keyboard
 import random
 import colorama
@@ -9,6 +9,12 @@ os.system('mode con: cols=60 lines=31')
 
 colorama.init()
 
+class Desktop(Node):
+    def __init__(self):
+        super().__init__([0, 0], "Begin (B)")
+    def _process(self, scene, delta):
+        if keyboard.is_pressed("B"):
+            scene.manager.change_current_scene("level")
 
 class Progressbar(Node):
     def __init__(self, position):
@@ -29,9 +35,7 @@ class Progressbar(Node):
                 self.collision_box[0][0] = 3
             else:
                 self.segments.append("░")
-                self.collision_box[0][0] += 1
-                if len(self.segments) == 20:
-                    scene.stop()
+                self.collision_box[0][0] += 1    
         if isinstance(collider, CyanSegment):
             if all(map(lambda x: x in ["-"], self.segments)):
                 self.segments = ["░"] * collider.multiplier
@@ -39,8 +43,6 @@ class Progressbar(Node):
             else:
                 self.segments.extend(["░"] * collider.multiplier)
                 self.collision_box[0][0] += 1
-                if len(self.segments) == 20:
-                    scene.stop()
         if isinstance(collider, YellowSegment):
             if all(map(lambda x: x in ["-"], self.segments)):
                 self.segments = ["▓"]
@@ -63,7 +65,8 @@ class Progressbar(Node):
             self.segments = ["░"] * 20
             scene.stop()
         self.renderobject.texture = f"████████████████████████\n██{''.join(self.segments)}{' ' * (20 - len(self.segments))}██\n████████████████████████"
-
+        if len(self.segments) == 20:
+            scene.manager.change_current_scene("winning")
 
 class Segment(Node):
     def __init__(self, position, texture, speed, wobbling_speed):
@@ -155,32 +158,38 @@ class WinningScreen(Node):
 
     def _process(self, scene, delta):
         if keyboard.is_pressed("space"):
-            scene.stop()
-
-
-progressbar = Progressbar([6, 0])
-
-objectgen = ObjectGen()
-
-scene = Scene()
-
-scene.add_node(progressbar)
-
-scene.add_node(objectgen)
+            scene.manager.change_current_scene("desktop")
 
 confirm = input(
     "WARNING: Flashing lights, please do not play if you're sensitive (Y)")
 
 if confirm.upper() == "Y":
     try:
-        scene.start()
+        manager = SceneManager()
+        
+        desktop = Desktop()
 
-        winning = Scene()
+        desktopscene = Scene(manager, "desktop")
+
+        desktopscene.add_node(desktop)
+
+        progressbar = Progressbar([6, 0])
+
+        objectgen = ObjectGen()
+
+        scene = Scene(manager, "level")
+
+        scene.add_node(progressbar)
+
+        scene.add_node(objectgen)
+
+        winning = Scene(manager, "winning")
 
         winning_popup = WinningScreen()
+
         winning.add_node(winning_popup)
 
-        winning.start()
+        manager.change_current_scene("desktop")
     except Exception as e:
         print(e)
         input()

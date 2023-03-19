@@ -13,10 +13,12 @@ class Node():
         pass
 
 class Scene():
-    def __init__(self):
+    def __init__(self, manager, name):
         self.nodes = []
         self.renderer = Renderer([60, 30])
         self.stop_flag = False
+        self.manager = manager
+        self.manager.scenes[name] = self
 
     def start(self):
         loop_start_time = 0
@@ -50,3 +52,12 @@ class Scene():
     def remove_node(self, node: Node):
         self.nodes.remove(node)
         self.renderer.remove_object(node.renderobject)
+
+class SceneManager():
+    def __init__(self):
+        self.scenes = {}
+        self.current_scene = None
+    def change_current_scene(self, new_scene):
+        if self.current_scene:
+            self.current_scene.stop()
+        self.scenes[new_scene].start()

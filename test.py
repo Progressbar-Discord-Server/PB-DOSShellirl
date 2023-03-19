@@ -142,7 +142,7 @@ class ObjectGen(Node):
                 0, 60), 0], 4, 4), RedSegment([random.randint(0, 60), 0], 4, 4), YellowSegment([random.randint(0, 60), 0], 4, 4),
                 NullSegment([random.randint(0, 60), 0], 4, 4), GreenSegment([random.randint(0, 60), 0], 4, 4),
                 CyanSegment([random.randint(0, 60), 0], 4, 4, random.randint(2, 3)), Clippy([random.randint(0, 60), 
-                random.randint(0, 30)], [0.3, 0.14, 0.01, 0.14, 0.3, 0.01, 0.1])])[0])
+                random.randint(0, 30)])], [0.3, 0.14, 0.01, 0.14, 0.3, 0.01, 0.1])[0])
             self.ticks = 0
 
 

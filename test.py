@@ -19,7 +19,7 @@ class Desktop(Node):
             scene.manager.change_current_scene("level")
 
 
-current_level = 0
+current_level = 1
 
 
 class Progressbar(Node):

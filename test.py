@@ -46,7 +46,7 @@ class Progressbar(Node):
                 self.segments = ["▓"]
                 self.collision_box[0][0] = 3
             else:
-                self.segments.append("░")
+                self.segments.append("▓")
                 self.collision_box[0][0] += 1
                 if len(self.segments) == 20:
                     scene.stop()
@@ -125,10 +125,12 @@ class Clippy(Node):
             del self
         else:
             progressbar_pos = scene.get_node(0).position
-            if progressbar_pos != self.position:
+            try:
                 direction = [(progressbar_pos[i]-self.position[i])/abs(progressbar_pos[i]-self.position[i]) for i in range(2)]
                 self.position[0] += direction[0] * 4 * delta
                 self.position[1] += direction[1] * 4 * delta
+            except ZeroDivisionError:
+                pass
 
 class ObjectGen(Node):
     def __init__(self):
@@ -141,8 +143,9 @@ class ObjectGen(Node):
             scene.add_node(random.choices([BlueSegment([random.randint(0, 60), 0], 4, 4), PinkSegment([random.randint(
                 0, 60), 0], 4, 4), RedSegment([random.randint(0, 60), 0], 4, 4), YellowSegment([random.randint(0, 60), 0], 4, 4),
                 NullSegment([random.randint(0, 60), 0], 4, 4), GreenSegment([random.randint(0, 60), 0], 4, 4),
-                CyanSegment([random.randint(0, 60), 0], 4, 4, random.randint(2, 3)), Clippy([random.randint(0, 60), 
-                random.randint(0, 30)])], [0.3, 0.14, 0.01, 0.14, 0.3, 0.01, 0.1])[0])
+                CyanSegment([random.randint(0, 60), 0], 4, 4, random.randint(2, 3))], [0.3, 0.14, 0.01, 0.14, 0.3, 0.01, 0.1])[0])
+            scene.add_node(random.choice([Clippy([random.randint(0, 60), 
+                random.randint(0, 30)])]))
             self.ticks = 0
 
 
@@ -169,11 +172,15 @@ confirm = input(
     "WARNING: Flashing lights, please do not play if you're sensitive (Y)")
 
 if confirm.upper() == "Y":
-    scene.start()
+    try:
+        scene.start()
 
-    winning = Scene()
+        winning = Scene()
 
-    winning_popup = WinningScreen()
-    winning.add_node(winning_popup)
+        winning_popup = WinningScreen()
+        winning.add_node(winning_popup)
 
-    winning.start()
+        winning.start()
+    except Exception as e:
+        print(e)
+        input()

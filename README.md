@@ -22,6 +22,7 @@ git clone Progressbar-Discord-Server/PB-DOSShellirl
 ### Installing the dependencies
 After that, you have to install the dependencies:
 ```bash
+cd src
 pip install -r requirements.txt
 ```
 ## Running

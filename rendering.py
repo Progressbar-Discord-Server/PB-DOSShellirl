@@ -4,27 +4,55 @@ import time
 
 class RenderingObject():
     def __init__(self, position: list, texture: str):
+        """Renderable object
+
+        Args:
+            position (list): Position in the frame
+            texture (str): Texture of the object
+        """
         self.position = position
         self.texture = texture
 
     def set_position(self, position: list):
+        """Sets the object current position
+
+        Args:
+            position (list): New position
+        """
         self.position = position
 
 
 class Renderer():
     def __init__(self, viewport_size: list):
+        """Class that processes rendering objects
+
+        Args:
+            viewport_size (list): Size of the viewport
+        """
         self.objects = []
         self.viewport_size = viewport_size
         self.last_frame = []
         self.frames_without_clear = 0
 
     def add_object(self, obj: RenderingObject):
+        """Adds an object to the renderer
+
+        Args:
+            obj (RenderingObject): Object to be added
+        """
         self.objects.append(obj)
 
     def remove_object(self, obj: RenderingObject):
+        """Removes an object from the renderer
+
+        Args:
+            obj (RenderingObject): Object to be removed
+        """
         self.objects.remove(obj)
 
     def render_frame(self):
+        """Renders and prints all objects
+        """
         viewport_vector = [[' ' for _ in range(
             self.viewport_size[0])] for _ in range(self.viewport_size[1])]
         for obj in self.objects:

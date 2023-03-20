@@ -25,7 +25,7 @@ After that, you have to install the dependencies:
 pip install -r requirements.txt
 ```
 ## Running
-Run the `test.py` file and have fun :).
+Run the `game.py` file and have fun :).
 
 ## Features
 

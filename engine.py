@@ -34,7 +34,7 @@ class Scene():
 
         self.temp_nodes = list(map(copy.deepcopy, self.nodes))
         for temp_node in self.temp_nodes:
-            self.renderer.add_object(temp_node)
+            self.renderer.add_object(temp_node.renderobject)
         self.stop_flag = False
         while not self.stop_flag:
             collision_boxes = []

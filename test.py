@@ -35,6 +35,7 @@ class Progressbar(Node):
             (keyboard.is_pressed("d") - keyboard.is_pressed("a"))
 
     def _on_collision(self, scene, collider):
+        global current_level
         if isinstance(collider, BlueSegment):
             if all(map(lambda x: x in ["-"], self.segments)):
                 self.segments = ["░"]
@@ -72,6 +73,7 @@ class Progressbar(Node):
             scene.stop()
         self.renderobject.texture = f"████████████████████████\n██{''.join(self.segments)}{' ' * (20 - len(self.segments))}██\n████████████████████████"
         if len(self.segments) == 20:
+            current_level += 1
             scene.manager.change_current_scene("winning")
 
 
@@ -157,6 +159,12 @@ class Clippy(Node):
             except ZeroDivisionError:
                 pass
 
+class LevelCount(Node):
+    def __init__(self):
+        super().__init__([24 - (len(str(current_level)))/2, 0], f"level {current_level}")
+    def _process(self, scene, delta):
+        self.position = [24 - (len(str(current_level)))/2, 0]
+        self.renderobject.texture = f"level {current_level}"
 
 class ObjectGen(Node):
     def __init__(self):
@@ -178,9 +186,7 @@ class ObjectGen(Node):
 
 class WinningScreen(Node):
     def __init__(self):
-        global current_level
         super().__init__([16, 3], "╔═════════════════════════╗\n║        You win!         ║\n╠═════════════════════════╣\n║                         ║\n║                         ║\n║    Congratulations!     ║\n║                         ║\n║                         ║\n║      ╔═══════════╗      ║\n║      ║    O K    ║      ║\n║      ╚═══════════╝      ║\n╚═════════════════════════╝")
-        current_level += 1
 
     def _process(self, scene, delta):
         if keyboard.is_pressed("space"):
@@ -204,11 +210,15 @@ if confirm.upper() == "Y":
 
         objectgen = ObjectGen()
 
+        levelcount = LevelCount()
+
         scene = Scene(manager, "level")
 
         scene.add_node(progressbar)
 
         scene.add_node(objectgen)
+        
+        scene.add_node(levelcount)
 
         winning = Scene(manager, "winning")
 

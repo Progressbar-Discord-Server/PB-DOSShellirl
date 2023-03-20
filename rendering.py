@@ -23,7 +23,6 @@ class Renderer():
         self.objects.remove(obj)
 
     def render_frame(self):
-
         viewport_vector = [[' ' for _ in range(self.viewport_size[0])] for _ in range(self.viewport_size[1])]
         for obj in self.objects:
             for row_i, row in enumerate(map(list, obj.texture.split("\n"))):
